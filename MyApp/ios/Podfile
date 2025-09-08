@@ -8,6 +8,9 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+# Required for React Native Reanimated 4.x Worklets
+$RNReanimatedNewArchitecture = false
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -24,7 +27,7 @@ target 'MyApp' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # Firebase pods (no modular headers)
+  # Firebase pods
   pod 'FirebaseCore'
   pod 'FirebaseAuth'
   pod 'FirebaseFirestore'
@@ -38,3 +41,6 @@ target 'MyApp' do
     )
   end
 end
+
+# Required for React Native Reanimated 4.x Worklets
+$RNReanimatedNewArchitecture = false
