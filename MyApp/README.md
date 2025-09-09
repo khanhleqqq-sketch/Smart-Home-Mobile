@@ -1,97 +1,208 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 🏠 Smart Home Mobile App
 
-# Getting Started
+A modern React Native mobile application for controlling and monitoring smart home devices with Firebase Authentication.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 📱 Features
 
-## Step 1: Start Metro
+- 🔐 **Firebase Authentication** - Secure user authentication for both Android and iOS
+- 📱 **Cross-Platform** - Built with React Native for iOS and Android
+- 🎨 **Modern UI** - Clean, responsive interface with safe area handling
+- ⚡ **Fast Refresh** - Hot reloading for rapid development
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🛠️ Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- **React Native** 0.81.1
+- **TypeScript** 5.8.3
+- **Firebase** Authentication
+- **React Native Safe Area Context**
+- **Jest** for testing
 
-```sh
-# Using npm
-npm start
+## 📋 Prerequisites
 
-# OR using Yarn
-yarn start
+Before you begin, ensure you have the following installed:
+
+- **Node.js** ≥ 20.0.0
+- **npm** or **yarn**
+- **React Native CLI**
+- **Android Studio** (for Android development)
+- **Xcode** (for iOS development)
+- **CocoaPods** (for iOS dependencies)
+
+> 💡 **Tip**: Follow the [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment) guide for detailed installation instructions.
+
+## 🚀 Quick Start
+
+### 1️⃣ Clone and Install
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd MyApp
+
+# Install dependencies
+npm install
 ```
 
-## Step 2: Build and run your app
+### 2️⃣ iOS Setup (macOS only)
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+```bash
+# Install CocoaPods (first time only)
+bundle install
+
+# Install iOS dependencies
+cd ios && bundle exec pod install && cd ..
+```
+
+### 3️⃣ Start Development Server
+
+```bash
+# Start Metro bundler
+npm start
+```
+
+### 4️⃣ Run the App
+
+#### Android
+```bash
+# Make sure you have an Android emulator running or device connected
+npm run android
+```
+
+#### iOS
+```bash
+# Make sure you have iOS simulator running or device connected
+npm run ios
+```
+
+## 🧪 Development Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start Metro bundler |
+| `npm run android` | Build and run Android app |
+| `npm run ios` | Build and run iOS app |
+| `npm test` | Run Jest tests |
+| `npm run lint` | Run ESLint |
+
+## 🏗️ Project Structure
+
+```
+MyApp/
+├── 📱 App.tsx              # Main app component
+├── 🧪 __tests__/           # Test files
+├── 🤖 android/             # Android-specific code
+├── 🍎 ios/                 # iOS-specific code
+├── 🔧 babel.config.js      # Babel configuration
+├── 🔧 metro.config.js      # Metro bundler config
+├── 🔧 tsconfig.json        # TypeScript config
+└── 🔧 jest.config.js       # Jest test config
+```
+
+## 🔥 Firebase Configuration
+
+This app uses Firebase Authentication. Make sure you have:
+
+- ✅ Firebase project set up
+- ✅ `google-services.json` in `android/app/src/`
+- ✅ `GoogleService-Info.plist` in `ios/`
+
+## 🐛 Development Tips
+
+### Hot Reloading
+- **Android**: Press `R` twice or `Ctrl/Cmd + M` → Reload
+- **iOS**: Press `R` in iOS Simulator
+
+### Common Issues
+
+<details>
+<summary>📱 iOS Build Issues</summary>
+
+```bash
+# Clean iOS build
+cd ios && xcodebuild clean && cd ..
+
+# Reinstall pods
+cd ios && bundle exec pod install && cd ..
+```
+</details>
+
+<details>
+<summary>🤖 Android Build Issues</summary>
+
+```bash
+# Clean Android build
+cd android && ./gradlew clean && cd ..
+
+# Reset Metro cache
+npx react-native start --reset-cache
+```
+</details>
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage
+npm test -- --coverage
+```
+
+## 📝 Code Quality
+
+This project uses:
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **TypeScript** for type safety
+
+```bash
+# Check code quality
+npm run lint
+
+# Format code (if Prettier script exists)
+npm run format
+```
+
+## 🚀 Building for Production
 
 ### Android
+```bash
+# Generate release APK
+cd android && ./gradlew assembleRelease
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+# Generate release bundle
+cd android && ./gradlew bundleRelease
 ```
 
 ### iOS
+1. Open `ios/MyApp.xcworkspace` in Xcode
+2. Select "Product" → "Archive"
+3. Follow Xcode's distribution workflow
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+## 🤝 Contributing
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-```sh
-bundle install
-```
+## 📚 Resources
 
-Then, and every time you update your native dependencies, run:
+- 📖 [React Native Documentation](https://reactnative.dev/docs/getting-started)
+- 🔥 [Firebase Documentation](https://firebase.google.com/docs)
+- 📱 [React Native CLI](https://github.com/react-native-community/cli)
+- 🧪 [Jest Testing Framework](https://jestjs.io/)
 
-```sh
-bundle exec pod install
-```
+## 📄 License
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-```sh
-# Using npm
-npm run ios
+---
 
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+<div align="center">
+Made with ❤️ for Smart Home automation
+</div>
