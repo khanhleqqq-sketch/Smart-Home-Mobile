@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a React Native mobile application for Smart Home control, built with React Native 0.81.1 and TypeScript. The app integrates Firebase Authentication for both Android and iOS platforms.
+This is a React Native mobile application for Smart Home control, built with React Native 0.81.1 and TypeScript. The app uses React Navigation for screen management and integrates Firebase Authentication for both Android and iOS platforms.
 
 ## Development Commands
 
@@ -26,35 +26,56 @@ bundle exec pod install       # Install iOS dependencies
 
 ### Core Stack
 - **React Native 0.81.1** with TypeScript
+- **React Navigation 7.x** with Native Stack Navigator
 - **Firebase Authentication** (@react-native-firebase/app, @react-native-firebase/auth)
-- **Safe Area Context** for proper screen layouts
+- **React Native Reanimated** for animations
+- **React Native Gesture Handler** for touch interactions
 - **Jest** for testing with React Test Renderer
 
+### Navigation Architecture
+- `App.tsx` - Main app component with NavigationContainer
+- `src/navigations/HomeNavigation.tsx` - Stack navigator configuration with HomeStackParamList type definitions
+- Navigation flow: Home → Dashboard screens
+- TypeScript navigation types defined for type-safe navigation
+
 ### Project Structure
-- `App.tsx` - Main application component using SafeAreaProvider
-- `android/` - Android platform-specific code and configuration
-- `ios/` - iOS platform-specific code and configuration
-- `__tests__/` - Jest test files
+```
+src/
+├── navigations/
+│   └── HomeNavigation.tsx    # Main stack navigator
+├── screen/
+│   ├── HomeScreen.tsx        # Home screen component
+│   └── DashboardScreen.tsx   # Dashboard screen component
+App.tsx                       # Root component with NavigationContainer
+__tests__/App.test.tsx        # Main app test
+```
 
 ### Configuration Files
 - `tsconfig.json` - Extends @react-native/typescript-config
-- `.eslintrc.js` - Uses @react-native preset
-- `babel.config.js`, `metro.config.js` - React Native build configuration
-- Firebase configuration files present in both platforms
+- `babel.config.js` - Includes react-native-reanimated/plugin
+- `metro.config.js`, `jest.config.js` - React Native build configuration
+- `Gemfile` - CocoaPods and Ruby dependencies for iOS builds
+- Firebase configuration: `android/app/src/google-services.json` and iOS GoogleService-Info.plist
 
 ### Testing
 - Single test file: `__tests__/App.test.tsx`
-- Uses React Test Renderer for component testing
+- Uses React Test Renderer with ReactTestRenderer.act for async testing
 - Run tests with `npm test`
 
 ## Platform-Specific Notes
 
 ### Firebase Integration
-- Both Android and iOS have Firebase configuration files
-- Google Services configured for authentication
+- Android: `google-services.json` configured in android/app/src/
+- iOS: GoogleService-Info.plist required for Firebase services
+- Google Services plugin configured for authentication
+
+### iOS Development
+- Uses Gemfile for managing CocoaPods versions
+- Specific version constraints to avoid build failures
+- Bundle exec required for pod commands
 
 ### Development Environment
-- Node.js >=20 required
+- Node.js >=20 required (specified in package.json engines)
 - React Native CLI for building and running apps
 - Xcode required for iOS development
 - Android Studio/SDK required for Android development
