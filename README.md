@@ -67,6 +67,10 @@ npm start
 # Make sure you have an Android emulator running or device connected
 npm run android
 ```
+```bash
+Make sure you create the local.properties file in android directory with this value 
+sdk.dir=/Users/{your_pc_name}/Library/Android/sdk 
+```
 
 #### iOS
 ```bash
