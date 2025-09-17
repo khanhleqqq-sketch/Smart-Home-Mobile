@@ -3,12 +3,12 @@
 #include "time.h"
 
 // ====== WiFi cấu hình tại đây ======
-const char* ssid = "Ten-WiFi-Nha-Ban";      // đổi thành tên WiFi của bạn
-const char* password = "MatKhauWiFi";       // đổi thành mật khẩu WiFi
+const char* ssid = "Ten-WiFi-Nha-Ban";      // đổi tên WiFi của bạn
+const char* password = "MatKhauWiFi";       // đổi mật khẩu WiFi nhà bạnnn
 
 // ====== NTP (giờ Việt Nam) ======
 const char* ntpServer = "pool.ntp.org";
-const long gmtOffset_sec = 7 * 3600;  // múi giờ VN
+const long gmtOffset_sec = 7 * 3600;  // múi giờ VN/hoặc múi giờ chổ bạn
 const int daylightOffset_sec = 0;
 
 // ====== Web server ======
@@ -69,7 +69,7 @@ void setup() {
       if (id == 5) { // Nhóm B (trước 23h)
         relayBState = state;
         digitalWrite(relayB, relayBState ? HIGH : LOW);
-        request->send(200, "text/plain", "Relay B updated");
+        request->send(200, "text/plain", "Relay B updated");  //khi app gửi request / relay?id=5&state=1 thì bật, /relay?id=5&state=0 thì off
         return;
       }
     }
@@ -80,7 +80,7 @@ void setup() {
 }
 
 void loop() {
-  struct tm timeinfo;
+  struct tm timeinfo;   //lấy giờ thực tế từ internet, nếu ko cần thì khỏi
   if (!getLocalTime(&timeinfo)) {
     Serial.println("Không lấy được thời gian");
     delay(1000);
