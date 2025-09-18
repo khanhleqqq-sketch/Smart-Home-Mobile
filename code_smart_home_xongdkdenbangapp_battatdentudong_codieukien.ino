@@ -24,6 +24,12 @@ const int relayB = 13;   // relay nhóm B
 bool relayBState = false;
 
 unsigned long lastMotionTime = 0;
+// Non-blocking kiểm tra 1 phút sau khi hết 5 phút không có chuyển động
+bool checkingWindowActive = false;
+unsigned long checkingWindowStartMs = 0;
+
+// Theo dõi giờ lần cuối lấy được từ NTP để fallback nếu getLocalTime() thất bại
+int lastKnownHour = -1;
 
 void setup() {
   Serial.begin(115200);
@@ -59,17 +65,31 @@ void setup() {
       int id = request->getParam("id")->value().toInt();
       int state = request->getParam("state")->value().toInt();
 
+      if (state != 0 && state != 1) {
+        request->send(400, "text/plain", "state must be 0 or 1");
+        return;
+      }
+
       if (id >= 0 && id < 4) { // Nhóm A
-        relayAState[id] = state;
+        relayAState[id] = (state == 1);
         digitalWrite(relayPinsA[id], relayAState[id] ? HIGH : LOW);
         request->send(200, "text/plain", "Relay A updated");
         return;
       }
 
-      if (id == 5) { // Nhóm B (trước 23h)
-        relayBState = state;
+      if (id == 5) { // Nhóm B
+        // Kiểm tra giờ hiện tại để quyết định có cho phép điều khiển tay không
+        struct tm nowInfo;
+        bool timeOk = getLocalTime(&nowInfo);
+        int currentHour = timeOk ? nowInfo.tm_hour : lastKnownHour;
+        bool autoMode = (currentHour >= 23);
+        if (autoMode) {
+          request->send(423, "text/plain", "Relay B locked: auto mode after 23h");
+          return;
+        }
+        relayBState = (state == 1);
         digitalWrite(relayB, relayBState ? HIGH : LOW);
-        request->send(200, "text/plain", "Relay B updated");  //khi app gửi request / relay?id=5&state=1 thì bật, /relay?id=5&state=0 thì off
+        request->send(200, "text/plain", "Relay B updated");
         return;
       }
     }
@@ -81,41 +101,56 @@ void setup() {
 
 void loop() {
   struct tm timeinfo;   //lấy giờ thực tế từ internet, nếu ko cần thì khỏi
-  if (!getLocalTime(&timeinfo)) {
-    Serial.println("Không lấy được thời gian");
-    delay(1000);
-    return;
+  bool gotTime = getLocalTime(&timeinfo);
+  int hour;
+  if (gotTime) {
+    hour = timeinfo.tm_hour;
+    lastKnownHour = hour;
+  } else {
+    // Fallback: dùng giờ lần cuối lấy được; nếu chưa có, giả định <23h để tránh khóa điều khiển tay
+    if (lastKnownHour == -1) {
+      hour = 12; // fallback an toàn
+    } else {
+      hour = lastKnownHour;
+    }
   }
-  int hour = timeinfo.tm_hour;
 
   // Sau 23h: bật chế độ cảm biến
   if (hour >= 23) {
     int pirValue = digitalRead(pirPin);
 
+    // Phát hiện chuyển động: bật ngay và ghi nhận thời điểm
     if (pirValue == HIGH) {
       lastMotionTime = millis();
       digitalWrite(relayB, HIGH);
       relayBState = true;
+      // Nếu đang trong cửa sổ kiểm tra, thoát ra vì đã có chuyển động
+      if (checkingWindowActive) {
+        checkingWindowActive = false;
+      }
     }
 
+    // Nếu đang bật và đã quá 5 phút không phát hiện thêm chuyển động
     if (relayBState) {
-      if (millis() - lastMotionTime > 5UL * 60UL * 1000UL) { // hết 5 phút
-        unsigned long checkStart = millis();
-        bool stillMotion = false;
+      unsigned long elapsedSinceLastMotion = millis() - lastMotionTime;
+      if (!checkingWindowActive && elapsedSinceLastMotion > 5UL * 60UL * 1000UL) {
+        // Bắt đầu cửa sổ kiểm tra 1 phút (non-blocking)
+        checkingWindowActive = true;
+        checkingWindowStartMs = millis();
+      }
 
-        while (millis() - checkStart < 60UL * 1000UL) { // kiểm tra thêm 1 phút
-          if (digitalRead(pirPin) == HIGH) {
-            stillMotion = true;
-            break;
-          }
-          delay(100);
-        }
-
-        if (stillMotion) {
-          lastMotionTime = millis(); // reset lại 5 phút
+      if (checkingWindowActive) {
+        // Trong cửa sổ kiểm tra, nếu có chuyển động -> tiếp tục bật và reset 5 phút
+        if (digitalRead(pirPin) == HIGH) {
+          lastMotionTime = millis();
+          checkingWindowActive = false;
         } else {
-          digitalWrite(relayB, LOW);
-          relayBState = false;
+          // Hết 1 phút mà không có chuyển động -> tắt
+          if (millis() - checkingWindowStartMs >= 60UL * 1000UL) {
+            digitalWrite(relayB, LOW);
+            relayBState = false;
+            checkingWindowActive = false;
+          }
         }
       }
     }
