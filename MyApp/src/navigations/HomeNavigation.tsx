@@ -1,7 +1,8 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screen/commons/HomeScreen";
-import DashboardScreen from "../screen/commons/DashboardScreen";
+import HomeScreen from "../screen/authenticated/HomeScreen";
+import DashboardScreen from "../screen/authenticated/DashboardScreen";
+
 
 // 1. Tạo type cho stack
 export type HomeStackParamList = {

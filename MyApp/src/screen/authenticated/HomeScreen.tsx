@@ -12,7 +12,7 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'H
 
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const { signOut, user } = useAuth();
+  const { signOut, profile } = useAuth();
 
   const handleNavigateToDashboard = () => {
     navigation.navigate('Dashboard');
@@ -76,9 +76,9 @@ const HomeScreen = () => {
               <View style={homeStyle.welcomeContainer}>
                 <Text style={homeStyle.welcomeText}>Welcome back!</Text>
                 <Text style={homeStyle.title}>🏠 Smart Home</Text>
-                {user && (
+                {profile && (
                   <Text style={homeStyle.userInfo}>
-                    {user.phoneNumber}
+                    {profile.phone}
                   </Text>
                 )}
               </View>

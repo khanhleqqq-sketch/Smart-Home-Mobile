@@ -28,30 +28,50 @@ bundle exec pod install       # Install iOS dependencies
 - **React Native 0.81.1** with TypeScript
 - **React Navigation 7.x** with Native Stack Navigator
 - **Firebase Authentication** (@react-native-firebase/app, @react-native-firebase/auth)
+- **Firebase Firestore** (@react-native-firebase/firestore) for user data storage
 - **React Native Reanimated** for animations
 - **React Native Gesture Handler** for touch interactions
 - **Jest** for testing with React Test Renderer
 
+### Authentication Architecture
+- **Two-tier authentication system**: Firebase Auth + Firestore user profiles
+- **SMS-based authentication** with phone number verification
+- **AuthContext** (`src/contexts/AuthContext.tsx`) provides global auth state management
+- **User types** defined in `src/types/User.ts` with support for multiple auth methods (SMS, Face)
+- **Custom hooks** (`src/hooks/customs/useUsers.ts`) for Firestore user operations
+
 ### Navigation Architecture
-- `App.tsx` - Main app component with NavigationContainer
-- `src/navigations/HomeNavigation.tsx` - Stack navigator configuration with HomeStackParamList type definitions
-- Navigation flow: Home → Dashboard screens
-- TypeScript navigation types defined for type-safe navigation
+- `App.tsx` - Main app component with NavigationContainer and AuthProvider wrapper
+- **Conditional navigation**: AuthNavigation for unauthenticated, HomeNavigation for authenticated users
+- **AuthNavigation** (`src/navigations/AuthNavigation.tsx`) - Login → Verification flow
+- **HomeNavigation** (`src/navigations/HomeNavigation.tsx`) - Home → Dashboard flow
+- TypeScript navigation types defined with strict param list typing
 
 ### Project Structure
 ```
 src/
+├── contexts/
+│   └── AuthContext.tsx       # Global auth state & Firebase integration
 ├── navigations/
-│   └── HomeNavigation.tsx    # Main stack navigator
+│   ├── AuthNavigation.tsx    # Unauthenticated user flow
+│   └── HomeNavigation.tsx    # Authenticated user flow  
 ├── screen/
-│   ├── HomeScreen.tsx        # Home screen component
-│   └── DashboardScreen.tsx   # Dashboard screen component
-App.tsx                       # Root component with NavigationContainer
-__tests__/App.test.tsx        # Main app test
+│   ├── commons/              # Screen components
+│   └── styles/               # Screen-specific styles
+├── hooks/
+│   └── customs/              # Custom hooks (useUsers for Firestore)
+└── types/
+    └── User.ts               # User interface definitions
 ```
 
+### Firebase Integration
+- **Authentication**: Phone number verification with SMS codes
+- **Firestore**: User profile storage with real-time listeners
+- **User creation flow**: Auto-creates Firestore document on first Firebase Auth
+- **Multi-auth support**: Designed for SMS + Face recognition (Face auth partially implemented)
+
 ### Configuration Files
-- `tsconfig.json` - Extends @react-native/typescript-config
+- `tsconfig.json` - Extends standard React Native TypeScript config with strict mode
 - `babel.config.js` - Includes react-native-reanimated/plugin
 - `metro.config.js`, `jest.config.js` - React Native build configuration
 - `Gemfile` - CocoaPods and Ruby dependencies for iOS builds
