@@ -6,8 +6,7 @@ import AuthNavigation from "./src/navigations/AuthNavigation";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
 
 const AppNavigator = () => {
-  const { user, isLoading } = useAuth();
-
+  const { profile, isLoading } = useAuth();
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -16,7 +15,7 @@ const AppNavigator = () => {
     );
   }
 
-  return user ? <HomeNavigation /> : <AuthNavigation />;
+  return profile ? <HomeNavigation /> : <AuthNavigation />;
 };
 
 export default function App() {
