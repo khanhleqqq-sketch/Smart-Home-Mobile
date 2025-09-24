@@ -9,12 +9,12 @@ import {
   Pressable,
   Image,
 } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import loginStyle from '../styles/loginStyle';
 import { useAuth } from '../../contexts/AuthContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { useNavigation } from '@react-navigation/native';
+import { HomeScreenNavigationProp } from '../authenticated/HomeScreen';
 
 const AuthIcon = ({ type }: { type: 'face' | 'google' }) => (
   <View style={type === 'google' ? loginStyle.googleIconContainer : loginStyle.faceIconContainer}>
@@ -33,22 +33,22 @@ const AuthIcon = ({ type }: { type: 'face' | 'google' }) => (
 const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const { signInWithGoogle } = useAuth();
+  const { authenticateWithGoogle, profile } = useAuth();
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   const handleGoogleAuth = async () => {
     setLoading(true);
     try {
-      await signInWithGoogle();
-      Alert.alert('Success', 'Google authentication successful!');
-    } catch (error) {
-      console.error('Google authentication error:', error);
-      Alert.alert('Authentication Failed', 'Google authentication failed. Please try again.');
+      isLogin ? await authenticateWithGoogle("login") : await authenticateWithGoogle("signup");
+      if(profile) {
+        navigation.navigate("Home");
+      }
+    } catch (error: any) {
+      Alert.alert('Authentication Failed : ' + error.message);
     } finally {
       setLoading(false);
     }
   };
-
-
 
   return (
     <>
@@ -87,7 +87,7 @@ const LoginScreen = () => {
               <AuthIcon type="google" />
               <View style={loginStyle.authButtonContent}>
                 <Text style={loginStyle.authButtonTitle}>
-                  {isLogin ? 'Sign in with Google' : 'Get started with Google'}
+                  {isLogin ? 'Login with Google' : 'Sign up with Google'}
                 </Text>
                 <Text style={loginStyle.authButtonSubtitle}>
                   {isLogin ? 'Access your account securely' : 'Create your account instantly'}
@@ -108,7 +108,7 @@ const LoginScreen = () => {
                   <Pressable onTouchEnd={() => {
                     setIsLogin(false);
                   }}>
-                    <Text style={loginStyle.footerLink}>Sign Up</Text>
+                    <Text style={loginStyle.footerLink}>Sign up</Text>
                   </Pressable>
                 </Text>
               ) : (
@@ -117,7 +117,7 @@ const LoginScreen = () => {
                   <Pressable onTouchEnd={() => {
                     setIsLogin(true);
                   }}>
-                    <Text style={loginStyle.footerLink}>Sign In</Text>
+                    <Text style={loginStyle.footerLink}>Login</Text>
                   </Pressable>
                 </Text>
               )}

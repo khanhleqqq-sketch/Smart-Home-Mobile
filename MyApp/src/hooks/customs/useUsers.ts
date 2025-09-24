@@ -10,7 +10,7 @@ interface UseUsersReturn {
     createUser: (userData: Omit<User, 'createdAt'>) => Promise<string | null>;
     updateUser: (userId: string, updates: Partial<User>) => Promise<boolean>;
     deleteUser: (userId: string) => Promise<boolean>;
-    getUserByPhone: (phoneNumber: string) => Promise<User | null>;
+    getUserById: (userId: string) => Promise<User | null>;
 }
 
 export function useUsers(): UseUsersReturn {
@@ -63,7 +63,8 @@ export function useUsers(): UseUsersReturn {
         }
     }, []);
 
-    const createUser = useCallback(async (userData: Omit<User, 'createdAt' | 'id'>): Promise<string | null> => {
+    const createUser = useCallback(async (userData: Omit<User, 'createdAt'>): Promise<string | null> => {
+        console.log(userData)
         try {
             const docRef = await firestore().collection("users").add({
                 ...userData,
@@ -99,11 +100,11 @@ export function useUsers(): UseUsersReturn {
         }
     }, []);
 
-    const getUserByPhone = useCallback(async (phoneNumber: string): Promise<User | null> => {
+    const getUserById = useCallback(async (userId: string): Promise<User | null> => {
         try {
             const snapshot = await firestore()
                 .collection("users")
-                .where("phone", "==", phoneNumber)
+                .where("id", "==", userId)
                 .limit(1)
                 .get();
             
@@ -117,7 +118,7 @@ export function useUsers(): UseUsersReturn {
                 ...(doc.data() as Omit<User, 'id'>),
             };
         } catch (err) {
-            console.error("Error getting user by phone:", err);
+            console.error("Error getting user by id:", err);
             return null;
         }
     }, []);
@@ -130,6 +131,6 @@ export function useUsers(): UseUsersReturn {
         createUser,
         updateUser,
         deleteUser,
-        getUserByPhone,
+        getUserById,
     };
 }
