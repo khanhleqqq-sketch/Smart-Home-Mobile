@@ -25,6 +25,7 @@ export interface User {
   id?: string;
   name: string;
   email: string;
+  image: string;
   authMethods: AuthMethod[];
   googleAuth?: GoogleAuth;
   faceAuth?: FaceAuth;

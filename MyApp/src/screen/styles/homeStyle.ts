@@ -55,8 +55,18 @@ const homeStyle = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  profileIcon: {
-    fontSize: 24,
+  avatarContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30, // = width/2
+    overflow: "hidden", // bắt buộc để ảnh không tràn ra ngoài
+    borderWidth: 2,
+    borderColor: "#ccc", // viền mỏng đẹp
+  },
+  avatar: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover", // để ảnh không bị méo
   },
   sectionContainer: {
     paddingHorizontal: 20,
