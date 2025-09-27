@@ -36,7 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { getUserById, createUser } = useUsers();
   const { storeLoggedAccount, getLoggedAccount, clearAllAccounts } = useSqlite();
 
-  // Configure Google Sign-In
+  // Configure Google Sign-In 
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: Config.GOOGLE_WEB_CLIENT_ID,
@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const loadStoredProfile = async () => {
       try {
         const storedAccount = await getLoggedAccount();
-        
+        console.log("Logged account from SQLite:", storedAccount);
         if (storedAccount) {
           // Convert stored account back to User format
           const user: User = {

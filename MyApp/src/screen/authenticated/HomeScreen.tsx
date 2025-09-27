@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { use } from 'react';
 import { View, Text, TouchableOpacity, Alert, StatusBar, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,8 +14,7 @@ export type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamL
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { signOut, profile } = useAuth();
-  const {getLoggedAccount} = useSqlite();
-
+  const { getLoggedAccount } = useSqlite();
   const handleNavigateToDashboard = () => {
     navigation.navigate('Dashboard');
   };
@@ -36,7 +35,7 @@ const HomeScreen = () => {
   };
 
   const handleTestSQlite = async () => {
-    const accData =  await getLoggedAccount();
+    const accData = await getLoggedAccount();
   }
   const QuickActionCard = ({ icon, title, subtitle, onPress, color = '#667eea' }: {
     icon: string;
@@ -79,15 +78,16 @@ const HomeScreen = () => {
           <View style={homeStyle.headerSection}>
             <View style={homeStyle.headerContent}>
               <View style={homeStyle.welcomeContainer}>
-                <Text style={homeStyle.welcomeText}>Welcome back! <Text >{profile!.name}</Text></Text>
+                <Text style={homeStyle.welcomeText}>Welcome back!</Text>
                 <Text style={homeStyle.title}>🏠 Smart Home</Text>
               </View>
               <TouchableOpacity style={homeStyle.profileButton} onPress={handleSignOut}>
                 <View style={homeStyle.avatarContainer}>
-                  <Image
-                    source={{ uri: profile!.image }}
-                    style={homeStyle.avatar}
-                  />
+                  {profile?.image &&
+                    <Image
+                      source={{ uri: profile!.image }}
+                      style={homeStyle.avatar}
+                    />}
                 </View>
               </TouchableOpacity>
             </View>
@@ -143,7 +143,7 @@ const HomeScreen = () => {
             <Text style={homeStyle.logoutButtonText}>Sign Out</Text>
           </TouchableOpacity>
 
-           <TouchableOpacity style={homeStyle.logoutButton} onPress={handleTestSQlite}>
+          <TouchableOpacity style={homeStyle.logoutButton} onPress={handleTestSQlite}>
             <Text style={homeStyle.logoutButtonText}>Test SQLite</Text>
           </TouchableOpacity>
         </ScrollView>

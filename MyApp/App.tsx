@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthProvider, useAuth } from "./src/contexts/AuthContext";
 import HomeNavigation from "./src/navigations/HomeNavigation";
@@ -7,6 +7,10 @@ import { ActivityIndicator, View, StyleSheet } from "react-native";
 
 const AppNavigator = () => {
   const { profile, isLoading } = useAuth();
+
+  useEffect(() => {
+  }, [profile, isLoading]);
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -14,7 +18,6 @@ const AppNavigator = () => {
       </View>
     );
   }
-
   return profile ? <HomeNavigation /> : <AuthNavigation />;
 };
 
