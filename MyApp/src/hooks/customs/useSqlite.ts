@@ -69,7 +69,7 @@ export function useSqlite(): SqLiteReturn {
         try {
             const db = await getDBConnection();
             if (!db || !user.id) return;
-
+            console.log(user)
             await createTable();
 
             const loggedAccount: LoggedAccount = {
@@ -89,7 +89,7 @@ export function useSqlite(): SqLiteReturn {
                 INSERT OR REPLACE INTO ${TABLE_NAME}
                 (id, name, email, authMethods, googleAuth, faceAuth, image, createdAt, lastLogin, isActive)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `, [
+            `, [                                                                                                                                                                                                                                                                                                                                                                                                                          
                 loggedAccount.id,
                 loggedAccount.name,
                 loggedAccount.email,

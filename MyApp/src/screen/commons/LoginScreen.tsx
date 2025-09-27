@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -35,12 +35,11 @@ const LoginScreen = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const { authenticateWithGoogle, profile } = useAuth();
   const navigation = useNavigation<HomeScreenNavigationProp>();
-
   const handleGoogleAuth = async () => {
     setLoading(true);
     try {
       isLogin ? await authenticateWithGoogle("login") : await authenticateWithGoogle("signup");
-      if(profile) {
+      if (profile) {
         navigation.navigate("Home");
       }
     } catch (error: any) {
@@ -101,6 +100,7 @@ const LoginScreen = () => {
                 </View>
               )}
             </TouchableOpacity>
+           
             <View style={{ alignItems: 'center' }}>
               {isLogin ? (
                 <Text style={loginStyle.footerText}>
