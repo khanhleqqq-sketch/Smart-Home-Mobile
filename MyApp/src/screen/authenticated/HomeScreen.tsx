@@ -13,7 +13,7 @@ export type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamL
 
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const { signOut, profile } = useAuth();
+  const auth = useAuth();
   const { getLoggedAccount } = useSqlite();
   const handleNavigateToDashboard = () => {
     navigation.navigate('Dashboard');
@@ -28,12 +28,11 @@ const HomeScreen = () => {
         {
           text: 'Sign Out',
           style: 'destructive',
-          onPress: signOut
+          onPress: auth?.signOut
         },
       ]
     );
   };
-
   const handleTestSQlite = async () => {
     const accData = await getLoggedAccount();
   }
@@ -83,9 +82,9 @@ const HomeScreen = () => {
               </View>
               <TouchableOpacity style={homeStyle.profileButton} onPress={handleSignOut}>
                 <View style={homeStyle.avatarContainer}>
-                  {profile?.image &&
+                  {auth?.profile?.image &&
                     <Image
-                      source={{ uri: profile!.image }}
+                      source={{ uri: auth.profile.image }}
                       style={homeStyle.avatar}
                     />}
                 </View>
