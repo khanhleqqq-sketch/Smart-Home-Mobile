@@ -8,11 +8,6 @@ import { OauthAccount } from "../types/OAuth";
 import { useUsers } from "../hooks/customs/useUsers";
 import { useSqlite } from "../hooks/customs/useSqlite";
 import { Alert } from "react-native";
-
-
-
-
-
 interface AuthContextType {
   profile: User | null;
   isLoading: boolean;

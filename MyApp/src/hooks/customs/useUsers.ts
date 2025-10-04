@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import firestore, { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
-import { User, AuthMethod } from "../../types/User";
+import firestore from "@react-native-firebase/firestore";
+import { User } from "../../types/User";
 
 interface UseUsersReturn {
     users: User[];
