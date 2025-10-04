@@ -21,6 +21,28 @@ export interface FaceAuth {
   lastVerifiedAt: FirebaseFirestoreTypes.Timestamp | null;
 }
 
+export interface DeviceInformation {
+  deviceId: string;
+  brand: string;
+  model: string;
+  systemName: string;
+  systemVersion: string;
+  appVersion: string;
+  isEmulator: boolean;
+  ipAddress?: string;
+  location?: LocationInfo;
+}
+
+export interface LocationInfo {
+  latitude?: number;
+  longitude?: number;
+  address?: string;
+  city?: string;
+  country?: string;
+  postalCode?: string;
+  region?: string;
+}
+
 export interface User {
   id?: string;
   name: string;
@@ -30,4 +52,5 @@ export interface User {
   googleAuth?: GoogleAuth;
   faceAuth?: FaceAuth;
   createdAt: FirebaseFirestoreTypes.Timestamp;
+  deviceInfo?: DeviceInformation
 }

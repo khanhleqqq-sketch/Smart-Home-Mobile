@@ -15,6 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../authenticated/HomeScreen';
+import { useSqlite } from '../../hooks/customs/useSqlite';
 
 const AuthIcon = ({ type }: { type: 'face' | 'google' }) => (
   <View style={type === 'google' ? loginStyle.googleIconContainer : loginStyle.faceIconContainer}>
@@ -33,13 +34,14 @@ const AuthIcon = ({ type }: { type: 'face' | 'google' }) => (
 const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const { authenticateWithGoogle, profile } = useAuth();
+  const auth = useAuth();
+  const {getLoggedAccount} = useSqlite();
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const handleGoogleAuth = async () => {
     setLoading(true);
     try {
-      isLogin ? await authenticateWithGoogle("login") : await authenticateWithGoogle("signup");
-      if (profile) {
+      isLogin ? await auth?.authenticateWithGoogle("login") : await auth?.authenticateWithGoogle("signup");
+      if (auth?.profile) {
         navigation.navigate("Home");
       }
     } catch (error: any) {
@@ -75,8 +77,14 @@ const LoginScreen = () => {
               Seamless, real-time communication powered by MQTT
             </Text>
           </View>
-
           <View style={loginStyle.authOptionsContainer}>
+            <TouchableOpacity
+              onPress={() => { 
+                console.log(getLoggedAccount())
+               }}
+              >
+              <Text>ok</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={[loginStyle.authButton, loginStyle.googleAuthButton]}
               onPress={handleGoogleAuth}

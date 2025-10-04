@@ -88,7 +88,7 @@ export function useSqlite(): SqLiteReturn {
             await db.executeSql(`
                 INSERT OR REPLACE INTO ${TABLE_NAME}
                 (id, name, email, authMethods, googleAuth, faceAuth, image, createdAt, lastLogin, isActive)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `, [                                                                                                                                                                                                                                                                                                                                                                                                                          
                 loggedAccount.id,
                 loggedAccount.name,
