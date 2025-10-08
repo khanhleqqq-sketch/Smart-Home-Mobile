@@ -22,6 +22,7 @@ export interface FaceAuth {
 }
 
 export interface DeviceInformation {
+  userId: string | null
   deviceId: string;
   brand: string;
   model: string;
@@ -31,6 +32,8 @@ export interface DeviceInformation {
   isEmulator: boolean;
   ipAddress?: string;
   location?: LocationInfo;
+  isMainDevice: boolean;
+  isActive: boolean;
 }
 
 export interface LocationInfo {
@@ -52,5 +55,5 @@ export interface User {
   googleAuth?: GoogleAuth;
   faceAuth?: FaceAuth;
   createdAt: FirebaseFirestoreTypes.Timestamp;
-  deviceInfo?: DeviceInformation
+  deviceInfo?: string[]
 }

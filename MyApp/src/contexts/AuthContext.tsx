@@ -8,16 +8,12 @@ import { OauthAccount } from "../types/OAuth";
 import { useUsers } from "../hooks/customs/useUsers";
 import { useSqlite } from "../hooks/customs/useSqlite";
 import { Alert } from "react-native";
-
-
-
-
-
+import { useDevices } from "../hooks/customs/useDevices";
 interface AuthContextType {
   profile: User | null;
   isLoading: boolean;
   deviceInfo: DeviceInformation | null;
-  signOut: () => Promise<void> ;
+  signOut: () => Promise<void>;
   authenticateWithGoogle: (authMethod: "login" | "signup") => Promise<void>;
   getDeviceInfo: () => Promise<DeviceInformation>;
 }
@@ -43,6 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [deviceInfo, setDeviceInfo] = useState<DeviceInformation | null>(null);
   const { getUserById, createUser } = useUsers();
+  const { storeDeviceInfoByUserId } = useDevices();
   const { storeLoggedAccount, getLoggedAccount, clearAllAccounts } = useSqlite();
 
   // Configure Google Sign-In 
@@ -58,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const initializeApp = async () => {
       try {
         // Collect device info first
-        const deviceInfo = await getDeviceInfo();
+        await getDeviceInfo();
         // Load stored profile
         const storedAccount = await getLoggedAccount();
         if (storedAccount) {
@@ -72,7 +69,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             googleAuth: storedAccount.googleAuth ? JSON.parse(storedAccount.googleAuth) : undefined,
             faceAuth: storedAccount.faceAuth ? JSON.parse(storedAccount.faceAuth) : undefined,
             createdAt: firestore.Timestamp.fromDate(new Date(storedAccount.createdAt)),
-            deviceInfo: deviceInfo
           };
           console.log(user)
           setProfile(user);
@@ -112,7 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Get Device Information
   const getDeviceInfo = async (): Promise<DeviceInformation> => {
     try {
-      // Get ib throw API 
+      // Get IP throw API 
       const ipFromApi = await fetch('https://api.ipify.org?format=json')
         .then(res => res.json())
         .then(data => data.ip)
@@ -143,6 +139,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Get location from IP address
       const location = ipAddress ? await getLocationFromIP(ipAddress) : {};
+      const isActive = true;
+      const isMainDevice = false
       const info: DeviceInformation = {
         deviceId,
         brand,
@@ -153,6 +151,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isEmulator,
         ipAddress,
         location,
+        isMainDevice,
+        isActive,
       };
       setDeviceInfo(info);
       return info;
@@ -229,9 +229,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (!userChoice) {
             return;
           }
-          await storeLoggedAccount(userExit!);
-          setProfile(userExit!);
+          // Check device step 
+
+
+          // await storeLoggedAccount(userExit!);
+          // setProfile(userExit!);
         } else {
+          // Store device info based on user id
+          deviceInfo!.isActive = true;
+          deviceInfo!.isMainDevice = true;
+          deviceInfo!.userId = OAuthAcc.id;
+          storeDeviceInfoByUserId(OAuthAcc.id, deviceInfo!);
+
           // Signup without existing account - Create new user in Firestore and store that into SQLite
           const newUserData: Omit<User, 'createdAt'> = {
             id: OAuthAcc.id,
@@ -244,7 +253,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               googleId: OAuthAcc.id,
               isVerified: true,
               lastVerifiedAt: firestore.Timestamp.now()
-            }
+            },
+            deviceInfo: [deviceInfo!.deviceId]
           };
           const newUserId = await createUser(newUserData);
           if (newUserId) {
