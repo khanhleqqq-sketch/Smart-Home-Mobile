@@ -6,6 +6,7 @@ interface UseDeviceReturn {
     devices: DeviceInformation[];
     fireStoreLoading: boolean;
     getDevicesByUserId: (userId: string) => Promise<DeviceInformation[] | null>;
+    storeDeviceInfoByUserId: (userId: string, deviceInfo: DeviceInformation) => Promise<boolean>
 }
 
 export function useDevices(): UseDeviceReturn {
@@ -33,7 +34,6 @@ export function useDevices(): UseDeviceReturn {
                     setfireStoreLoading(false);
                 }
             );
-
         return () => unsubscribe();
     })
 
@@ -53,7 +53,9 @@ export function useDevices(): UseDeviceReturn {
 
     const storeDeviceInfoByUserId = async (userId: string, deviceInfo: DeviceInformation): Promise<boolean> => {
         try{
-            await firestore().collection("devices").doc(userId).set(deviceInfo);
+            await firestore().collection("devices").doc(userId).set(
+                deviceInfo
+            );
             return true;
         }catch(error){
             console.error("Error storing device info:", error);
@@ -64,7 +66,8 @@ export function useDevices(): UseDeviceReturn {
     return {
         devices,
         fireStoreLoading,
-        getDevicesByUserId
+        getDevicesByUserId,
+        storeDeviceInfoByUserId
     }
 
 }
